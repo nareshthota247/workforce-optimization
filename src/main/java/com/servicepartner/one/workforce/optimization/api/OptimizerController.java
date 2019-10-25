@@ -7,6 +7,8 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,15 +27,25 @@ import com.servicepartner.one.workforce.optimization.model.CleaningTasks;
 import com.servicepartner.one.workforce.optimization.model.StaffingLevel;
 import com.servicepartner.one.workforce.optimization.service.OptimizerService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 
 @RestController
 @RequestMapping(value = "/api")
+@Api(value = "/api", description = "Optimize Controller")
 public class OptimizerController {
 	
+	private static final Logger logger = LoggerFactory.getLogger(OptimizerController.class);
+
 	@Autowired
 	OptimizerService optimizerService;
 	
 	@PostMapping("/optimize")
+	@ApiOperation(value = "Get all the optimize solution",
+    notes = "Get all the optimize solution",
+    response = StaffingLevel.class,
+    responseContainer = "List")
 	public ResponseEntity<List<StaffingLevel>> optimize(@Valid @RequestBody CleaningTasks tasks) {
 		
 		return ResponseEntity.ok(optimizerService.optimiseStaff(tasks));
@@ -42,7 +54,7 @@ public class OptimizerController {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
-//		logger.error("Exception MethodArgumentNotValidException :: {} ", ex.getMessage());
+		logger.error("Exception MethodArgumentNotValidException :: {} ", ex.getMessage());
 		Map<String, String> errors = new HashMap<>();
 		ex.getBindingResult().getAllErrors().forEach(error -> {
 			String fieldName = ((FieldError) error).getField();
@@ -55,7 +67,7 @@ public class OptimizerController {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public ResponseEntity<ErrorResponse> handleValidationExceptions(HttpMessageNotReadableException ex) {
-//		logger.error("Exception HttpMessageNotReadableException :: {} ", ex.getMessage());
+		logger.error("Exception HttpMessageNotReadableException :: {} ", ex.getMessage());
 		ErrorResponse error = new ErrorResponse();
 		error.setErrorCode(Integer.valueOf(1002));
 		error.setErrorDesc(ex.getMessage());
