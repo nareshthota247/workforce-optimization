@@ -1,11 +1,20 @@
 package com.servicepartner.one.workforce.optimization.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.servicepartner.one.workforce.optimization.model.StaffingLevel;
 
-public class OptimizationUtil {
+public final class OptimizationUtil {
+	
+	private static final Logger logger = LoggerFactory.getLogger(OptimizationUtil.class);
+	
+	private OptimizationUtil(){
+	}
 	
     public static int greatestCommonDivisor(int a, int b) {
         if (b==0){
+        	logger.debug("greatestCommonDivisor {}",a);
             return a;
         }
         return greatestCommonDivisor(b,a%b);
@@ -16,6 +25,8 @@ public class OptimizationUtil {
         int currentStaffCapacity = (seniorCapacity * currSeniors) + (juniorCapacity * currJuniors);
         int distance = Math.abs(currentStaffCapacity-buildingSize);
         
+        logger.debug("currentStaffCapacity {}",currentStaffCapacity);
+        logger.debug("distance {}",distance);
         if(distance <= minInterval && currentStaffCapacity >= buildingSize){
             // We can't take a smaller step downwards and capacity has been filled
             return new StaffingLevel(currSeniors,currJuniors); //This is a good result

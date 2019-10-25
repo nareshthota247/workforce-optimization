@@ -3,6 +3,8 @@ package com.servicepartner.one.workforce.optimization.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.servicepartner.one.workforce.optimization.exceptionhandeling.RoomNegitiveException;
@@ -12,6 +14,8 @@ import com.servicepartner.one.workforce.optimization.util.OptimizationUtil;
 
 @Service
 public class OptimizerServiceImpl implements OptimizerService {
+
+	private static final Logger logger = LoggerFactory.getLogger(OptimizerServiceImpl.class);
 
 	@Override
 	public List<StaffingLevel> optimiseStaff(CleaningTasks tasks) {
@@ -33,12 +37,19 @@ public class OptimizerServiceImpl implements OptimizerService {
 	@Override
     public StaffingLevel optimiseForBuilding(int buildingSize, int seniorCapacity, int juniorCapacity){
 
-        //Setup our starting parameters
-        int startSeniors =  (int)Math.ceil((double)buildingSize/(double)seniorCapacity); //What if we only used seniors to clean?
-        int startJuniors = 0; //And no juniors?
-        
+		logger.debug("buildingSize {}",buildingSize);
+		logger.debug("seniorCapacity {}",seniorCapacity);
+		logger.debug("juniorCapacity {}",juniorCapacity);
+		
+        int startSeniors =  (int)Math.ceil((double)buildingSize/(double)seniorCapacity);
+        int startJuniors = 0;
         int minOffset = OptimizationUtil.greatestCommonDivisor(seniorCapacity,juniorCapacity);
         int minStepSize = Math.min(seniorCapacity, juniorCapacity);
+        
+        logger.debug("startSeniors {}",startSeniors);
+        logger.debug("startJuniors {}",startJuniors);
+        logger.debug("minOffset {}",minOffset);
+        logger.debug("minStepSize {}",minStepSize);
         
         return OptimizationUtil.exploreParams(Integer.MAX_VALUE,buildingSize,minOffset,minStepSize,seniorCapacity,juniorCapacity,startSeniors,startSeniors,startJuniors,startJuniors);
         

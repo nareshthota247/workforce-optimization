@@ -78,7 +78,7 @@ public class OptimizerController {
 
 	@ExceptionHandler(RoomNegitiveException.class)
 	public ResponseEntity<ErrorResponse> handleValidationExceptions(RoomNegitiveException ex) {
-		logger.error("Exception HttpMessageNotReadableException :: {} ", ex.getMessage());
+		logger.error("Exception RoomNegitiveException :: {} ", ex.getMessage());
 		ErrorResponse error = new ErrorResponse();
 		error.setErrorCode(Integer.valueOf(1003));
 		error.setErrorDesc(ex.getMessage());

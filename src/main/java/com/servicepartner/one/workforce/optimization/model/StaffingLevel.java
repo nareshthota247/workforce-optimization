@@ -51,13 +51,8 @@ public class StaffingLevel {
 			return false;
 		}
 		final StaffingLevel other = (StaffingLevel) obj;
-		if (this.senior != other.senior) {
-			return false;
-		}
-		if (this.junior != other.junior) {
-			return false;
-		}
-		return true;
+		
+		return ((this.senior == other.senior)||(this.junior == other.junior));
 	}
 
 }
