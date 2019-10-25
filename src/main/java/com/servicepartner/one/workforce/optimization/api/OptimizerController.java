@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.servicepartner.one.workforce.optimization.exceptionhandeling.ErrorResponse;
+import com.servicepartner.one.workforce.optimization.exceptionhandeling.RoomNegitiveException;
 import com.servicepartner.one.workforce.optimization.model.CleaningTasks;
 import com.servicepartner.one.workforce.optimization.model.StaffingLevel;
 import com.servicepartner.one.workforce.optimization.service.OptimizerService;
@@ -75,4 +76,13 @@ public class OptimizerController {
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
 	}
 
+	@ExceptionHandler(RoomNegitiveException.class)
+	public ResponseEntity<ErrorResponse> handleValidationExceptions(RoomNegitiveException ex) {
+		logger.error("Exception HttpMessageNotReadableException :: {} ", ex.getMessage());
+		ErrorResponse error = new ErrorResponse();
+		error.setErrorCode(Integer.valueOf(1003));
+		error.setErrorDesc(ex.getMessage());
+		error.setTimestamp(new Date());
+		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+	}
 }

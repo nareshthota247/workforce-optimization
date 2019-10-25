@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.servicepartner.one.workforce.optimization.exceptionhandeling.RoomNegitiveException;
 import com.servicepartner.one.workforce.optimization.model.CleaningTasks;
 import com.servicepartner.one.workforce.optimization.model.StaffingLevel;
 import com.servicepartner.one.workforce.optimization.util.OptimizationUtil;
@@ -17,7 +18,12 @@ public class OptimizerServiceImpl implements OptimizerService {
 		
 		 List<StaffingLevel> staffingLevels = new ArrayList<>();
 	        
+		 if(tasks.getRooms().length == 0)
+			 throw new RoomNegitiveException("Room count cannot be Zero");
 	        for(int roomCount : tasks.getRooms()){
+	        	if(roomCount<=0) {
+	        		throw new RoomNegitiveException("Room size cannot be Zero or Negitive");
+	        	}
 	            staffingLevels.add(optimiseForBuilding(roomCount,tasks.getSenior(),tasks.getJunior()));
 	        }
 	        
